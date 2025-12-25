@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Adventure - Interactive English Learning</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFA500',
+                        secondary: '#FFD700',
+                        accent: '#FF8C00',
+                        light: '#FFF8DC',
+                        dark: '#8B4513'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :root {
+            --primary: #FFA500;
+            --secondary: #FFD700;
+            --accent: #FF8C00;
+            --light: #FFF8DC;
+            --dark: #8B4513;
+        }
+        
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(to bottom, #FFF8DC, #FFEBCD);
+            color: #333;
+        }
+        
+        .comic-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        
+        .character {
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            border-radius: 60% 40% 50% 45%;
+            position: relative;
+            margin: 0 auto;
+            transform: rotate(15deg);
+            box-shadow:
+                inset -20px -20px 60px rgba(0,0,0,0.1),
+                20px 20px 40px rgba(255, 215, 0, 0.2);
+            animation: morphShape 6s ease-in-out infinite;
+        }
+        
+        @keyframes morphShape {
+            0% { border-radius: 60% 40% 50% 45%; }
+            50% { border-radius: 45% 55% 45% 55%; }
+            100% { border-radius: 60% 40% 50% 45%; }
+        }
+        
+        .character::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.4));
+            border-radius: inherit;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.5; }
+        }
+        
+        .character::after {
+            content: '';
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background-color: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            top: 25%;
+            left: 25%;
+            box-shadow: 100px 100px 0 rgba(255,255,255,0.9);
+            transform: rotate(-15deg);
+        }
+        
+        /* 🎵 Music Widget Style */
+        .music-widget {
+          display: flex;
+          align-items: center;
+          background: white;
+          border-radius: 30px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          padding: 10px 20px;
+          width: 330px;
+        }
+
+        .music-widget .cover {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          overflow: hidden;
+          margin-right: 10px;
+        }
+
+        .music-widget .cover img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .music-widget .track-info {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        .music-widget .track-info .title {
+          font-size: 14px;
+          font-weight: bold;
+        }
+
+        .music-widget .track-info .subtitle {
+          font-size: 12px;
+          color: #666;
+        }
+
+        .music-widget .controls {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .music-widget .btn {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: #f0f0f0;
+          cursor: pointer;
+          font-size: 12px;
+          user-select: none;
+        }
+
+        .music-widget .btn.play {
+          background: #222;
+          color: white;
+        }
+        
+        .eye {
+            position: absolute;
+            width: 14px;
+            height: 28px;
+            background-color: var(--dark);
+            border-radius: 50%;
+            top: 38%;
+            transform: rotate(-15deg);
+            animation: blink 4s ease-in-out infinite;
+        }
+        
+        @keyframes blink {
+            0%, 90%, 100% { transform: scaleY(1) rotate(-15deg); }
+            95% { transform: scaleY(0.1) rotate(-15deg); }
+        }
+        
+        .eye-left {
+            left: 32%;
+        }
+        
+        .eye-right {
+            right: 32%;
+        }
+        
+        .mouth {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            border: 7px solid var(--dark);
+            border-radius: 50%;
+            bottom: 28%;
+            left: 50%;
+            transform: translateX(-50%) rotate(-15deg);
+            border-top-color: transparent;
+            border-right-color: transparent;
+            animation: smile 3s ease-in-out infinite;
+        }
+        
+        @keyframes smile {
+            0%, 100% { transform: translateX(-50%) rotate(-15deg) scale(1); }
+            50% { transform: translateX(-50%) rotate(-15deg) scale(1.1); }
+        }
+        
+        .speech-bubble {
+            position: absolute;
+            background-color: #FFF;
+            padding: 20px 30px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 3px solid var(--dark);
+            max-width: 300px;
+        }
+        
+        .story-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid var(--dark);
+            margin: 20px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+            display: none;
+        }
+        
+        .story-card.active {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+        
+        .expression-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .expression-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .explanation-box {
+            background-color: #FFF8DC;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            margin-top: 20px;
+        }
+        
+        .explanation-text {
+            font-size: 1rem;
+            color: #8B4513;
+        }
+        
+        .typing-animation {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 2s steps(40, end) 1s forwards;
+            width: 0;
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 9.2ch; }
+        }
+        
+        .cursor-animation::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .wobble-animation {
+            animation: wobble 3s ease-in-out infinite;
+        }
+        
+        @keyframes wobble {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 2s ease-in-out 4.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            animation: scaleIn 1s ease-out forwards;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .character {
+                width: 200px;
+                height: 200px;
+                transform: scale(1) rotate(15deg);
+            }
+            
+            .speech-bubble {
+                font-size: 1rem;
+                padding: 15px 20px;
+                max-width: 200px;
+            }
+            
+            .hero-heading {
+                font-size: 2.5rem;
+            }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--accent);
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .card-counter {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        /* Tab navigation styles */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tab-btn {
+            background-color: white;
+            color: var(--dark);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--dark);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .tab-btn:hover {
+            background-color: var(--light);
+            transform: translateY(-2px);
+        }
+        
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .pdf-download {
+            display: block;
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .pdf-download:hover {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .contact-info {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .contact-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            color: var(--primary);
+        }
+        
+        .map-image {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.9);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        .full-page-modal .modal-content {
+             max-width: 700px;
+             height: 90%;
+             overflow-y: auto;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ccc;
+            transition: color 0.3s;
+        }
+        .modal-close:hover {
+            color: #888;
+        }
+        .modal-toggle {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #666;
+        }
+        .modal-toggle a {
+            color: var(--primary);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .modal-toggle a:hover {
+            text-decoration: underline;
+        }
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .modal-btn:hover {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        /* Quiz specific styles */
+        .quiz-option {
+            background: #fff;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-weight: bold;
+        }
+        .quiz-option:hover {
+            background-color: var(--light);
+            transform: translateY(-1px);
+        }
+        .quiz-option.selected {
+            background-color: var(--secondary);
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .beginner-bg { background-color: #4CAF50; }
+        .intermediate-bg { background-color: #FF9800; }
+        .pro-bg { background-color: #F44336; }
+        
+        .disabled-content {
+            opacity: 0.3;
+            pointer-events: none;
+            filter: blur(2px);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="main-content-container" class="max-w-7xl mx-auto bg-white overflow-hidden min-h-screen w-full md:w-[90%] shadow-xl disabled-content">
+        
+        <nav class="flex items-center justify-between px-8 md:px-11 py-4 md:py-8 bg-white">
+            <a href="#" class="text-2xl font-['Pacifico'] text-black">
+                <img src="logo gaemi.png" alt="Land Escape Logo" class="h-14 w-auto md:h-16" style="transform: scale(1.1);">
+            </a>
+            <div class="flex items-center space-x-4 md:space-x-12">
+                <a href="#" class="text-gray-800 hover:text-primary transition-colors">Programs</a>
+                <a href="#" class="text-gray-800 hover:text-primary transition-colors">Resources</a>
+                <a href="#" class="text-gray-800 hover:text-primary transition-colors">Teachers</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="login-btn" class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-400 border-b-2 border-orange-400 font-medium hover:from-orange-600 hover:to-orange-500 hover:border-orange-500 transition-all hidden md:block">Login / Register</button>
+                <a href="#story-section" class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-400 border-b-2 border-orange-400 font-medium hover:from-orange-600 hover:to-orange-500 hover:border-orange-500 transition-all scroll-btn hidden md:block">Get Started</a>
+            </div>
+            <button class="md:hidden text-orange-500">
+                <i class="ri-menu-line text-2xl"></i>
+            </button>
+        </nav>
+        <div class="music-widget fixed bottom-6 right-6 z-50">
+            <div class="cover">
+              <img src="https://picsum.photos/100/100?random=1" alt="cover">
+            </div>
+            <div class="track-info">
+              <div class="title">listening</div>
+              <div class="subtitle">just for you</div>
+            </div>
+            <div class="controls">
+              <div class="btn prev">⏮</div>
+              <div class="btn play">⏯</div>
+              <div class="btn next">⏭</div>
+            </div>
+          </div>
+          <audio id="audio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+        <div class="px-4 md:px-8 pt-32 md:pt-64 pb-32 md:pb-48 flex flex-col items-center justify-center scale-in bg-gradient-to-b from-white to-[#FFF5E6]">
+            <div class="relative mb-16 md:mb-24 float-animation">
+                <div class="character" style="transform: scale(1.2);">
+                    <div class="eye eye-left"></div>
+                    <div class="eye eye-right"></div>
+                    <div class="mouth"></div>
+                </div>
+                <div class="speech-bubble wobble-animation" style="opacity: 0; transform: scale(0.5); animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s forwards; left: -180px; top: 80px; border-radius: 20px 20px 20px 4px;">
+                    Hello!
+                </div>
+                <div class="speech-bubble wobble-animation" style="opacity: 0; transform: scale(0.5); animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 2.5s forwards; left: 200px; top: -40px; font-size: 1.3rem; padding: 15px 20px; background-color: #FFE5B4; border-radius: 20px 20px 4px 20px;">
+                    Let's learn!
+                </div>
+            </div>
+            
+            <div class="text-center mb-8">
+                <h1 class="text-3xl md:text-6xl font-bold flex flex-col md:flex-row items-center justify-center hero-heading">
+                    <span class="text-black">Fun way to </span>
+                    <span class="text-primary typing-animation cursor-animation typing-container ml-0 md:ml-4 mt-2 md:mt-0">learn English</span>
+                </h1>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center gap-4 justify-center md:ml-48">
+                <a href="#story-section" class="bg-gradient-to-r from-orange-500 to-orange-400 text-white px-8 py-4 md:px-16 md:py-6 rounded-full text-xl md:text-2xl font-medium hover:shadow-lg hover:scale-105 transition-all duration-300 fade-in whitespace-nowrap shadow-md relative overflow-hidden scroll-btn flex items-center justify-center">
+                    <span>Start Story Adventure</span>
+                    <i class="ri-arrow-right-line ml-2"></i>
+                </a>
+            </div>
+        </div>
+
+        <div id="story-section" class="py-16 md:py-29 bg-gradient-to-b from-[#FFF5E6] to-[#FFEBCD] px-4 md:px-8">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 md:mb-20 comic-font">English Learning Center</h2>
+            
+            <div class="tab-container">
+                <button class="tab-btn active" data-tab="terms">English Terms</button>
+                <button class="tab-btn" data-tab="grammar">Grammar with Stupid Guy</button>
+                <button class="tab-btn" data-tab="reading">Reading</button>
+                <button class="tab-btn" data-tab="resources">Introduction to Resources</button>
+                <button class="tab-btn" data-tab="contact">Classes & Consultation</button>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="tab-content active" id="terms">
+                    <div class="story-card active">
+                        <img src="ChatGPT Image Sep 7, 2025, 10_01_06 AM.jpg" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"We are crossing the street, hold my hand, son."</p>
+                        <p class="expression-text">"I wasn't born yesterday mom"</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "I wasn't born yesterday" is an English expression that means "I'm not a child, I'm not stupid".</p>
+                        </div>
+                        <div class="card-counter">Expression 1 of 13</div>
+                    </div>
+                    
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 7, 2025, 10_24_24 AM.jpg" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"Really? I'm over than a moon."</p>
+                        <p class="expression-text">"Hello, you were accepted to Harvard University."</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "I'm over than a moon" is an English expression that means "I'm very happy".</p>
+                        </div>
+                        <div class="card-counter">Expression 2 of 13</div>
+                    </div>
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 9, 2025, 10_09_59 PM.jpg" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"what happened to him ?"</p>
+                        <p class="expression-text">"he has broken his leg"</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "Subject + have/has + Past participle(V3)".</p>
+                        </div>
+                        <div class="card-counter">Expression 3 of 13</div>
+                    </div>
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 15, 2025, 01_35_39 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"come on dad you can do it "</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "come on".</p>
+                        </div>
+                        <div class="card-counter">Expression 4 of 13</div>
+                    </div>
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 15, 2025, 01_40_54 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"come on dad you can do it "</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "come on".</p>
+                        </div>
+                        <div class="card-counter">Expression 5 of 13</div>
+                    </div>
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 17, 2025, 08_00_51 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"Your dad told me what you did last night"</p>
+                        <p class="expression-text">"Don't believe a word he says mom"</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "Don't believe a word he says" is an English expression that means don't trust everything he says.".</p>
+                        </div>
+                        <div class="card-counter">Expression 6 of 13</div>
+                    </div>
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 17, 2025, 08_06_20 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"You can do a lot of things with your spare time"</p>
+                        <p class="expression-text">"I’m not a child grandma "</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "You can do a lot of things with your spare time" is an English expression that means you have time to do many different activities.".</p>
+                        </div>
+                        <div class="card-counter">Expression 7 of 13</div>
+                    </div>
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 18, 2025, 11_42_20 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"The cat’s out of the bag"</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "“The cat’s out of the bag” is an idiom that means a secret has been revealed or something hidden is no longer a secret.".</p>
+                        </div>
+                        <div class="card-counter">Expression 8 of 13</div>
+                    </div>
+
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 21, 2025, 07_44_32 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"I forgot my keys"</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "“I forgot my keys is an expression used to admit a mistake".</p>
+                        </div>
+                        <div class="card-counter">Expression 9 of 13</div>
+                    </div>
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 21, 2025, 07_37_14 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"You say that but..."</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "“You say that but is an English expression that is used when someone disagrees with what you just said".</p>
+                        </div>
+                        <div class="card-counter">Expression 10 of 13</div>
+                    </div>
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 21, 2025, 07_32_48 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"I heard it through the grapevine</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "“I heard it through the grapevine is an English expression that means I heard some gossip or rumors".</p>
+                        </div>
+                        <div class="card-counter">Expression 11 of 13</div>
+                    </div>
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 21, 2025, 07_29_16 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"It cost an arm and a leg"</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "“TIt cost an arm and a leg is an English expression that means it was extremely expensive".</p>
+                        </div>
+                        <div class="card-counter">Expression 12 of 13</div>
+                    </div>
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 26, 2025, 09_12_41 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"It cost an arm and a leg"</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "“TIt cost an arm and a leg is an English expression that means it was extremely expensive".</p>
+                        </div>
+                        <div class="card-counter">Expression 13 of 13</div>
+                    </div>
+                    
+
+
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 26, 2025, 09_23_44 PM.png" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"Break the ice"</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "“Break the ice” means to make people feel more comfortable in a social situation and start a friendly atmosphere".</p>
+                        </div>
+                        <div class="card-counter">Expression 13 of 13</div>
+                    </div>
+                    <div class="navigation-buttons">
+                        <button id="prev-btn" class="nav-btn" disabled>
+                            <i class="ri-arrow-left-line"></i> Previous
+                        </button>
+                        <button id="next-btn" class="nav-btn">
+                            Next <i class="ri-arrow-right-line"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="level-test-content" style="display: none;">
+                    </div>
+                <div class="tab-content" id="grammar">
+                    <div class="story-card active">
+                        <img src="photo_2025-09-09_22-55-37.jpg" alt="English Expression Example" class="expression-image">
+                        <p class="expression-text">"story teller : look at this stupid guy he has forgotten to brings his keys"</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text"><strong>Explanation:</strong> "Subject + have/has + Past participle(V3)".</p>
+                        </div>
+                    </div>
+                    
+                    <div class="story-card">
+                        <img src="ChatGPT Image Sep 12, 2025, 12_16_13 AM.jpg" alt="Grammar Lesson 2" class="expression-image">
+                        <p class="expression-text">story teller : look at this stupid guy ,he forgot to pay the taxi he took and the taxi left (the taxi is stupider than him)</p>
+                        <div class="explanation-box">
+                            <p class="explanation-text">this is a simple present tense grammar</p>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-buttons">
+                        <button class="nav-btn prev-btn" onclick="prevCard('grammar')">
+                            <i class="ri-arrow-left-line"></i> Previous
+                        </button>
+                        <button class="nav-btn next-btn" onclick="nextCard('grammar')">
+                            Next <i class="ri-arrow-right-line"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="card-counter" id="grammar-counter">1/2</div>
+                </div>
+                
+                <div class="tab-content" id="reading">
+                    <div class="story-card active">
+                        <h3 class="text-2xl font-bold text-center mb-6">Reading Materials</h3>
+                        <p class="expression-text mb-8">Improve your reading comprehension with these engaging stories. Download the PDFs and practice your English reading skills!</p>
+                        
+                        <a href="far from your dream.pdf" class="pdf-download" download>
+                            <i class="ri-download-line"></i> Download "Far From Your Dream" - Part 1
+                        </a>
+                        
+                        <a href="far from your dream.pdf" class="pdf-download" download>
+                            <i class="ri-download-line"></i> Download "Far From Your Dream" - Part 2
+                        </a>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="resources">
+                    <div class="story-card active">
+                        <h3 class="text-2xl font-bold text-center mb-6">Introduction to Resources</h3>
+                        <p class="expression-text mb-8" id="resources-intro-text">
+                            Based on your **Level Test** results, here are the top-tier English learning books to elevate your skills in reading, writing, and vocabulary.
+                            <span class="text-primary font-bold">Please take the Level Test first to see your personalized recommendations!</span>
+                        </p>
+                        
+                        <div id="dynamic-resource-list">
+                            <div class="mb-8 p-4 border-b-2 border-dashed border-primary">
+                                <h4 class="text-xl font-bold text-dark mb-2">1. General Resource (Default)</h4>
+                                <p class="text-gray-600 mb-4">You'll see specialized book recommendations here after you complete the **Level Test**! Try it now to get started!</p>
+                                <a href="#" class="pdf-download" onclick="document.querySelector('[data-tab=level-test]').click(); return false;">
+                                    <i class="ri-arrow-right-line"></i> Go to Level Test
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="tab-content" id="your-english-land">
+                    <div class="story-card active">
+                        <h3 class="text-2xl font-bold text-center mb-6">Welcome to Your English Land!</h3>
+                        <p class="expression-text mb-8">This is your personal map to track your English learning journey. Explore different areas to unlock new lessons!</p>
+                        <img src="map.png" alt="English Learning Map" class="map-image">
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="contact">
+                    <div class="story-card active">
+                        <h3 class="text-2xl font-bold text-center mb-6">Book a Class or Consultation</h3>
+                        <p class="expression-text mb-8">Ready to take your English to the next level? Contact us to schedule a class or consultation session.</p>
+                        
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <i class="ri-phone-line contact-icon"></i>
+                                <div>
+                                    <h4 class="font-bold">Phone Number</h4>
+                                    <p>09115024538</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="ri-map-pin-line contact-icon"></i>
+                                <div>
+                                    <h4 class="font-bold">Location</h4>
+                                    <p>rasht ,iran</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="ri-calendar-event-line contact-icon"></i>
+                                <div>
+                                    <h4 class="font-bold">Available Hours</h4>
+                                    <p>Monday-Friday: 9AM-6PM</p>
+                                    <p>Saturday: 10AM-4PM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-[#FFF5E6] pt-16 md:pt-24 pb-12 px-4 md:px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12">
+                    <div>
+                        <a href="#" class="text-3xl font-['Pacifico'] text-black mb-6 block">EnglishAdventure</a>
+                        <p class="text-gray-600 mb-6">Making English learning fun and effective through interactive stories and adventures.</p>
+                        <div class="flex space-x-4">
+                            <a href="#" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-primary transition-colors">
+                                <i class="ri-facebook-fill"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-primary transition-colors">
+                                <i class="ri-twitter-fill"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-primary transition-colors">
+                                <i class="ri-instagram-fill"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-primary transition-colors">
+                                <i class="ri-linkedin-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold mb-6">podcast</h4>
+                        <ul class="space-y-4">
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Stories</a></li>
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Grammar</a></li>
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">speacking</a></li>
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">listening</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold mb-6">Resources</h4>
+                        <ul class="space-y-4">
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Blog</a></li>
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Tips</a></li>
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Community</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold mb-6">Support</h4>
+                        <ul class="space-y-4">
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Help Center</a></li>
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Terms of Service</a></li>
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Privacy Policy</a></li>
+                            <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-gray-200 pt-8 text-center">
+                    <p class="text-gray-500">© 2023 EnglishAdventure. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="close-modal" style="display: none;">&times;</span>
+            <h3 class="text-2xl font-bold text-center mb-6" id="modal-title">Login Required</h3>
+            <form id="login-form">
+                <input type="email" placeholder="Email" class="modal-input" required>
+                <input type="password" placeholder="Password" class="modal-input" required>
+                <button type="submit" class="modal-btn">Login</button>
+                <div class="modal-toggle">Don't have an account? <a href="#" id="show-register">Register here</a></div>
+            </form>
+            <form id="register-form" style="display: none;">
+                <input type="text" placeholder="Full Name" class="modal-input" required>
+                <input type="email" placeholder="Email" class="modal-input" required>
+                <input type="password" placeholder="Password" class="modal-input" required>
+                <button type="submit" class="modal-btn">Register</button>
+                <div class="modal-toggle">Already have an account? <a href="#" id="show-login">Login here</a></div>
+            </form>
+        </div>
+    </div>
+    <div id="level-test-modal" class="modal full-page-modal">
+        <div class="modal-content">
+            <span class="modal-close" id="close-test-modal" style="display: none;">&times;</span>
+            <div class="story-card active" style="opacity: 1; transform: translateY(0); display: block; border: none; box-shadow: none;">
+                <h3 class="text-3xl font-bold text-center mb-6 text-primary">🧠 Professional English Level Test 🧠</h3>
+                <p class="expression-text mb-8">Answer the 9 questions to determine your level. Your results will unlock and customize your recommended resources!</p>
+                
+                <form id="level-test-form">
+                    <div class="mb-6 quiz-question" data-answer="b">
+                        <p class="font-bold mb-3">1. She _____ to the store when it started raining.</p>
+                        <div class="quiz-option" data-value="a">goes</div>
+                        <div class="quiz-option" data-value="b">was going</div>
+                        <div class="quiz-option" data-value="c">gone</div>
+                    </div>
+                    
+                    <div class="mb-6 quiz-question" data-answer="c">
+                        <p class="font-bold mb-3">2. "To **call off** the meeting" means to:</p>
+                        <div class="quiz-option" data-value="a">reschedule it</div>
+                        <div class="quiz-option" data-value="b">start it early</div>
+                        <div class="quiz-option" data-value="c">cancel it</div>
+                    </div>
+
+                    <div class="mb-6 quiz-question" data-answer="a">
+                        <p class="font-bold mb-3">3. We need to **get rid of** the old computers.</p>
+                        <div class="quiz-option" data-value="a">discard them</div>
+                        <div class="quiz-option" data-value="b">repair them</div>
+                        <div class="quiz-option" data-value="c">sell them quickly</div>
+                    </div>
+
+                    <div class="mb-6 quiz-question" data-answer="b">
+                        <p class="font-bold mb-3">4. If I had known you were coming, I _____ a cake.</p>
+                        <div class="quiz-option" data-value="a">would bake</div>
+                        <div class="quiz-option" data-value="b">would have baked</div>
+                        <div class="quiz-option" data-value="c">had baked</div>
+                    </div>
+
+                    <div class="mb-6 quiz-question" data-answer="c">
+                        <p class="font-bold mb-3">5. The project is still **up in the air**.</p>
+                        <div class="quiz-option" data-value="a">It is nearing completion.</div>
+                        <div class="quiz-option" data-value="b">It is being launched soon.</div>
+                        <div class="quiz-option" data-value="c">It is undecided or uncertain.</div>
+                    </div>
+
+                    <div class="mb-6 quiz-question" data-answer="a">
+                        <p class="font-bold mb-3">6. They _____ football every Sunday.</p>
+                        <div class="quiz-option" data-value="a">play</div>
+                        <div class="quiz-option" data-value="b">are playing</div>
+                        <div class="quiz-option" data-value="c">have played</div>
+                    </div>
+                    
+                    <div class="mb-6 quiz-question" data-answer="a">
+                        <p class="font-bold mb-3">7. You **shouldn't** have done that. It was very risky.</p>
+                        <div class="quiz-option" data-value="a">It expresses criticism about a past action.</div>
+                        <div class="quiz-option" data-value="b">It expresses lack of ability in the past.</div>
+                        <div class="quiz-option" data-value="c">It expresses a future warning.</div>
+                    </div>
+
+                    <div class="mb-6 quiz-question" data-answer="b">
+                        <p class="font-bold mb-3">8. The company decided to **launch** a new product line.</p>
+                        <div class="quiz-option" data-value="a">initiate</div>
+                        <div class="quiz-option" data-value="b">launch</div>
+                        <div class="quiz-option" data-value="c">commence</div>
+                    </div>
+                    
+                    <div class="mb-6 quiz-question" data-answer="a"> <p class="font-bold mb-3">9. He advised me _____ smoking.</p>
+                        <div class="quiz-option" data-value="a">to stop</div>
+                        <div class="quiz-option" data-value="b">that I stop</div>
+                        <div class="quiz-option" data-value="c">stopping</div>
+                    </div>
+
+                    <button type="submit" id="submit-test-btn" class="modal-btn mt-6">Submit Test and Get Level</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="level-result-modal" class="modal">
+        <div class="modal-content text-center">
+            <span class="modal-close" id="close-result-modal">&times;</span>
+            <h3 class="text-3xl font-bold mb-4 text-primary">🎉 Congratulations! 🎉</h3>
+            <p class="text-lg mb-6">Your English level has been determined:</p>
+            <div id="level-display" class="level-badge beginner-bg mx-auto">Beginner</div>
+            <div id="score-display" class="font-bold text-xl mt-3 text-dark">Score: 0/9</div>
+            <p id="level-message" class="mt-4 text-gray-700">Great start! Check the Resources tab for your personalized study plan.</p>
+            <button id="go-to-resources-btn" class="modal-btn mt-6">Go to My Resources</button>
+        </div>
+    </div>
+    <script>
+        // Quiz Data and Logic
+        const QUIZ_QUESTIONS = [
+            { id: 1, correct: 'b' }, // Past Continuous
+            { id: 2, correct: 'c' }, // Phrasal Verb (Call off)
+            { id: 3, correct: 'a' }, // Phrasal Verb (Get rid of)
+            { id: 4, correct: 'b' }, // Third Conditional
+            { id: 5, correct: 'c' }, // Idiom (Up in the air)
+            { id: 6, correct: 'a' }, // Simple Present
+            { id: 7, correct: 'a' }, // Modal (Shouldn't have)
+            { id: 8, correct: 'b' }, // Collocation (Launch a product)
+            { id: 9, correct: 'a' }, // Verb pattern (Advised me to stop)
+        ];
+
+        const LEVEL_CONFIG = {
+            beginner: { min: 1, max: 5, label: 'Beginner', message: 'Great start! Focus on foundational grammar and vocabulary. Your personalized resources are ready.', colorClass: 'beginner-bg' },
+            intermediate: { min: 6, max: 8, label: 'Intermediate', message: 'Fantastic job! You have a solid grasp of English. Now, focus on advanced structures and fluent conversation.', colorClass: 'intermediate-bg' },
+            pro: { min: 9, max: 9, label: 'Pro', message: 'You are a PRO! Excellent mastery of English. Your recommended resources will help you master advanced academic and professional skills.', colorClass: 'pro-bg' }
+        };
+
+        const RESOURCES_CONFIG = {
+            beginner: [
+                { title: "Oxford Word Skills Basic", desc: "Essential for building a solid foundation in basic vocabulary and simple sentence structures.", link: "https://dl.languagecentre.ir/ows/Oxford-Word-Skills-Basic%20[www.languagecentre.ir].pdf" },
+                { title: "Complete IELTS Bands 4-5", desc: "Continue building skills with engaging stories and simple communicative tasks.", link: "https://dl.languagecentre.ir/ielts/Complete-IELTS-Band%204-5-Student-Book%20[www.languagecentre.ir].pdf" },
+                { title: "Oxford English Grammar Course Basic", desc: "Introduction to slightly more complex tenses and wider vocabulary.", link: "https://dl.languagecentre.ir/oxford%20course/Oxford_English_Grammar_Course_Basic%20[www.languagecentre.ir].pdf" },
+            ],
+            intermediate: [
+                { title: "Oxford Word Skills Intermediate ", desc: "A classic resource for mastering intermediate to advanced grammar points with clear explanations.", link: "https://dl.languagecentre.ir/ows/Oxford-Word-Skills-Intermediate%20[www.languagecentre.ir].pdf" },
+                { title: "Complete IELTS Bands 5-6.5", desc: "A widely respected coursebook focusing on all four skills (reading, writing, listening, speaking).", link: "https://dl.languagecentre.ir/ielts/Complete%20IELTS%20band%205_5-6_5%20SB%20[www.languagecentre.ir].pdf" },
+                { title: "English Vocabulary in Use", desc: "Excellent for extra practice and deeper understanding of common grammatical errors.", link: "https://dl3.languagecentre.ir/vocabulary/English%20Vocabulary%20in%20Use%20Pre-Intermediate&Intermediate%204th%20Edition%20[www.languagecentre.ir].pdf" }
+            ],
+            pro: [
+                { title: "Oxford Word Skills Advanced", desc: "Sharpen your listening skills for academic and complex contexts, essential for advanced English use.", link: "https://dl.languagecentre.ir/ows/Oxford-Word-Skills-Advanced%20[www.languagecentre.ir].pdf" },
+                { title: "Complete IELTS Bands 6.5-7.5", desc: "Improve fluency, coherence, and complex vocabulary for professional and academic speaking situations.", link: "https://dl.languagecentre.ir/ielts/Complete-IELTS-Bands-6_5-7_5-Student-Book%20[www.languagecentre.ir].pdf" },
+                { title: "Oxford English Grammar Course – Advanced", desc: "Targeted vocabulary building for high-level language users and test preparation.", link: "https://dl.languagecentre.ir/oxford%20course/Oxford_English_Grammar_Course_Advanced%20[www.languagecentre.ir].pdf" }
+            ]
+        };
+        
+        // --- Custom Global Flags for Mandatory Flow ---
+        let isUserLoggedIn = false;
+        let isLevelTestCompleted = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const storyCards = document.querySelectorAll('#terms .story-card');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const cardCounter = document.querySelector('#terms .card-counter');
+            let currentCard = 0;
+            
+           
+            if (storyCards.length > 0) {
+                storyCards[0].classList.add('active');
+            }
+            
+            function updateCardCounter() {
+                if (cardCounter) {
+                    const totalTermsCards = document.querySelectorAll('#terms .story-card').length;
+                    cardCounter.textContent = `Expression ${currentCard + 1} of ${totalTermsCards}`;
+                }
+            }
+
+            updateCardCounter();
+
+            nextBtn.addEventListener('click', function() {
+                if (currentCard < storyCards.length - 1) {
+                    storyCards[currentCard].classList.remove('active');
+                    currentCard++;
+                    storyCards[currentCard].classList.add('active');
+                    
+                    prevBtn.disabled = false;
+                    if (currentCard === storyCards.length - 1) {
+                        nextBtn.disabled = true;
+                    }
+                    updateCardCounter();
+                }
+            });
+            
+            prevBtn.addEventListener('click', function() {
+                if (currentCard > 0) {
+                    storyCards[currentCard].classList.remove('active');
+                    currentCard--;
+                    storyCards[currentCard].classList.add('active');
+                    
+                    nextBtn.disabled = false;
+                    if (currentCard === 0) {
+                        prevBtn.disabled = true;
+                    }
+                    updateCardCounter();
+                }
+            });
+            
+            
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    
+                    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    
+                    
+                    button.classList.add('active');
+                    
+                    
+                    const tabId = button.getAttribute('data-tab');
+                    const tabContent = document.getElementById(tabId);
+                    if (tabContent) {
+                        tabContent.classList.add('active');
+                    }
+
+                    // Special update for Resources tab
+                    if (tabId === 'resources') {
+                        updateResourcesTab();
+                    }
+
+                    // Reset card navigation for each tab
+                    if (tabId === 'terms') {
+                        currentCard = 0;
+                        storyCards.forEach((card, index) => {
+                            if (index === 0) {
+                                card.classList.add('active');
+                            } else {
+                                card.classList.remove('active');
+                            }
+                        });
+                        prevBtn.disabled = true;
+                        nextBtn.disabled = storyCards.length <= 1;
+                        updateCardCounter();
+                    } else if (tabId === 'grammar') {
+                        initCardNavigation('grammar', 2);
+                    }
+                });
+            });
+            
+            
+            initCardNavigation('grammar', 2);
+            
+            
+            document.querySelectorAll('a.scroll-btn').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Initialize music widget
+            const audio = document.getElementById('audio');
+            const playButton = document.querySelector('.music-widget .btn.play');
+            let isPlaying = false;
+            
+            playButton.addEventListener('click', function() {
+                if (isPlaying) {
+                    audio.pause();
+                    playButton.innerHTML = '⏯';
+                } else {
+                    audio.play();
+                    playButton.innerHTML = '⏸';
+                }
+                isPlaying = !isPlaying;
+            });
+
+            // --- Mandatory Flow Logic ---
+            const mainContent = document.getElementById('main-content-container');
+            const loginBtnNav = document.getElementById('login-btn');
+            const loginModal = document.getElementById('login-modal');
+            const levelTestModal = document.getElementById('level-test-modal');
+            const resultModal = document.getElementById('level-result-modal');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const modalTitle = document.getElementById('modal-title');
+            const showLoginLink = document.getElementById('show-login');
+            const showRegisterLink = document.getElementById('show-register');
+            const goToResourcesBtn = document.getElementById('go-to-resources-btn');
+            
+            function checkMandatoryFlow() {
+                isLevelTestCompleted = localStorage.getItem('isLevelTestCompleted') === 'true';
+                isUserLoggedIn = localStorage.getItem('isUserLoggedIn') === 'true';
+
+                if (!isUserLoggedIn) {
+                    loginModal.style.display = 'flex';
+                    mainContent.classList.add('disabled-content');
+                    levelTestModal.style.display = 'none'; // Ensure test is hidden
+                } else if (!isLevelTestCompleted) {
+                    loginModal.style.display = 'none';
+                    levelTestModal.style.display = 'flex';
+                    mainContent.classList.add('disabled-content');
+                } else {
+                    // All checks passed
+                    loginModal.style.display = 'none';
+                    levelTestModal.style.display = 'none';
+                    mainContent.classList.remove('disabled-content');
+                    updateResourcesTab(); // Load personalized resources
+                }
+            }
+
+            // Simulate successful login/register
+            function handleLoginSuccess() {
+                localStorage.setItem('isUserLoggedIn', 'true');
+                isUserLoggedIn = true;
+                loginModal.style.display = 'none';
+                checkMandatoryFlow(); // Move to the next step: Level Test
+            }
+
+            loginBtnNav.addEventListener('click', () => {
+                loginModal.style.display = 'flex';
+            });
+            
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleLoginSuccess();
+            });
+
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleLoginSuccess();
+            });
+
+            showRegisterLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                modalTitle.textContent = 'Register';
+            });
+
+            showLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                registerForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                modalTitle.textContent = 'Login';
+            });
+            
+            // Result Modal close handlers
+            const closeResultModalBtn = document.getElementById('close-result-modal');
+
+            closeResultModalBtn.addEventListener('click', () => {
+                resultModal.style.display = 'none';
+            });
+
+            resultModal.addEventListener('click', (e) => {
+                if (e.target === resultModal) {
+                    resultModal.style.display = 'none';
+                }
+            });
+
+            goToResourcesBtn.addEventListener('click', () => {
+                resultModal.style.display = 'none';
+                // Switch to the Resources tab
+                document.querySelector('[data-tab=resources]').click();
+            });
+
+            // Level Test Quiz Logic
+            const quizOptions = document.querySelectorAll('#level-test-modal .quiz-option');
+            const quizForm = document.getElementById('level-test-form');
+            
+            quizOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionDiv = this.closest('.quiz-question');
+                    // Remove selection from all options in this question
+                    questionDiv.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+                    // Select the current option
+                    this.classList.add('selected');
+                });
+            });
+
+            quizForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let score = 0;
+                const allQuestions = document.querySelectorAll('#level-test-modal .quiz-question');
+                let unanswered = false;
+
+                allQuestions.forEach(qDiv => {
+                    const selectedOption = qDiv.querySelector('.quiz-option.selected');
+                    
+                    // The quiz questions in the modal are now the main quiz
+                    const questionNumber = parseInt(qDiv.querySelector('p.font-bold').textContent.split('.')[0]);
+                    const correctQuestion = QUIZ_QUESTIONS.find(q => q.id === questionNumber);
+
+                    if (!selectedOption) {
+                        unanswered = true;
+                        return;
+                    }
+                    
+                    if (selectedOption.getAttribute('data-value') === correctQuestion.correct) {
+                        score++;
+                    }
+                });
+
+                if (unanswered) {
+                    alert('لطفاً به همه سوالات پاسخ دهید تا سطح شما مشخص شود. (Please answer all questions to determine your level.)');
+                    return;
+                }
+                
+                // Mark test as completed and hide the test modal
+                localStorage.setItem('isLevelTestCompleted', 'true');
+                isLevelTestCompleted = true;
+                levelTestModal.style.display = 'none';
+                mainContent.classList.remove('disabled-content');
+
+                // Determine Level
+                let userLevel = LEVEL_CONFIG.beginner;
+                if (score >= LEVEL_CONFIG.pro.min) {
+                    userLevel = LEVEL_CONFIG.pro;
+                } else if (score >= LEVEL_CONFIG.intermediate.min) {
+                    userLevel = LEVEL_CONFIG.intermediate;
+                }
+
+                // Save score and level to local storage
+                localStorage.setItem('userLevelScore', score);
+                localStorage.setItem('userLevelName', userLevel.label);
+
+                // Display result modal
+                const levelDisplay = document.getElementById('level-display');
+                const scoreDisplay = document.getElementById('score-display');
+                const levelMessage = document.getElementById('level-message');
+
+                levelDisplay.textContent = userLevel.label;
+                levelDisplay.className = `level-badge mx-auto ${userLevel.colorClass}`;
+                scoreDisplay.textContent = `Score: ${score}/${QUIZ_QUESTIONS.length}`;
+                levelMessage.textContent = userLevel.message;
+                
+                resultModal.style.display = 'flex';
+                
+                // Update resources immediately after test submission
+                updateResourcesTab(userLevel.label);
+            });
+
+            // Dynamic Resource Generation
+            function generateResourceHTML(resource) {
+                return `
+                    <div class="mb-8 p-4 border-b-2 border-dashed border-primary">
+                        <h4 class="text-xl font-bold text-dark mb-2">${resource.title}</h4>
+                        <p class="text-gray-600 mb-4">${resource.desc}</p>
+                        <a href="${resource.link}" class="pdf-download" target="_blank">
+                            <i class="ri-download-line"></i> Download Resource
+                        </a>
+                    </div>
+                `;
+            }
+
+            function updateResourcesTab(level = localStorage.getItem('userLevelName')) {
+                const resourceList = document.getElementById('dynamic-resource-list');
+                const introText = document.getElementById('resources-intro-text');
+                resourceList.innerHTML = ''; // Clear existing content
+
+                if (level) {
+                    let levelKey = level.toLowerCase();
+                    if (levelKey === 'pro') levelKey = 'pro';
+                    else if (levelKey === 'intermediate') levelKey = 'intermediate';
+                    else levelKey = 'beginner';
+
+                    const resources = RESOURCES_CONFIG[levelKey];
+                    introText.innerHTML = `Based on your level **${level}**, here are the top-tier English learning books to elevate your skills in reading, writing, and vocabulary.`;
+
+                    resources.forEach(resource => {
+                        resourceList.innerHTML += generateResourceHTML(resource);
+                    });
+                } else {
+                    introText.innerHTML = `
+                        Based on your **Level Test** results, here are the top-tier English learning books to elevate your skills in reading, writing, and vocabulary.
+                        <span class="text-primary font-bold">Please take the Level Test first to see your personalized recommendations!</span>
+                    `;
+                    // Add default resource link to prompt the test
+                    resourceList.innerHTML = `
+                        <div class="mb-8 p-4 border-b-2 border-dashed border-primary">
+                            <h4 class="text-xl font-bold text-dark mb-2">1. General Resource (Default)</h4>
+                            <p class="text-gray-600 mb-4">You'll see specialized book recommendations here after you complete the **Level Test**! Try it now to get started!</p>
+                            <a href="#" class="pdf-download" onclick="document.querySelector('#level-test-modal').style.display='flex'; return false;">
+                                <i class="ri-arrow-right-line"></i> Go to Level Test
+                            </a>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Start the mandatory flow check when the page loads
+            checkMandatoryFlow();
+        });
+        
+        // Card navigation functions for grammar section
+        function initCardNavigation(sectionId, totalCards) {
+            window[`${sectionId}CurrentCard`] = 1;
+            window[`${sectionId}TotalCards`] = totalCards;
+            updateCardNavigation(sectionId);
+        }
+        
+        function showCard(sectionId, cardNumber) {
+            const cards = document.querySelectorAll(`#${sectionId} .story-card`);
+            cards.forEach(card => card.classList.remove('active'));
+            
+            setTimeout(() => {
+                cards[cardNumber - 1].classList.add('active');
+            }, 50);
+            
+            window[`${sectionId}CurrentCard`] = cardNumber;
+            updateCardNavigation(sectionId);
+        }
+        
+        function nextCard(sectionId) {
+            const current = window[`${sectionId}CurrentCard`];
+            const total = window[`${sectionId}TotalCards`];
+            
+            if (current < total) {
+                showCard(sectionId, current + 1);
+            }
+        }
+        
+        function prevCard(sectionId) {
+            const current = window[`${sectionId}CurrentCard`];
+            
+            if (current > 1) {
+                showCard(sectionId, current - 1);
+            }
+        }
+        
+        function updateCardNavigation(sectionId) {
+            const current = window[`${sectionId}CurrentCard`];
+            const total = window[`${sectionId}TotalCards`];
+            
+            const counterElement = document.getElementById(`${sectionId}-counter`);
+            if (counterElement) {
+                counterElement.textContent = `${current}/${total}`;
+            }
+            
+            const prevBtn = document.querySelector(`#${sectionId} .prev-btn`);
+            const nextBtn = document.querySelector(`#${sectionId} .next-btn`);
+            
+            if (prevBtn) prevBtn.disabled = current === 1;
+            if (nextBtn) nextBtn.disabled = current === total;
+        }
+    </script>
+</body>
+</html>
